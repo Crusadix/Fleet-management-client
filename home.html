@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!-- AIzaSyCnKfFi02VENIr0EXMND16fdBYSjxfncHA -->
+
+<head>
+  <meta charset="UTF-8">
+  <title>Fleet management simulation</title>
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyCnKfFi02VENIr0EXMND16fdBYSjxfncHA"></script>
+  <script src="jquery/jquery.easing.1.3.js"></script>
+  <script src="jquery/markerAnimate.js"></script>
+  <script src="jquery/SlidingMarker.min.js"></script>
+  <script defer type="text/javascript" src="js/ajaxCalls.js"></script>
+  <script defer type="text/javascript" src="js/myjs.js"></script>
+  <script defer type="text/javascript" src="js/polylineDecoder.js"></script>
+  <script> SlidingMarker.initializeGlobally(); </script>
+</head>
+
+<body>
+  <div id="map"></div>
+  <h4>!!Early draft, mainly to test out operations!!</h4>
+  <p>
+    <br>Some entities have already been input into the system; 4 buses (id 1-4), some passengers and 4 stops (some stations and
+    some regular)
+    <br>Click the map icons to access data/bus functions</p>
+  <form id="routeForm">
+    <div class="form-group">
+      <h5>Route building (required for all operation)</h5>
+      <label for="origin">Origin:
+        <input class="form-control" type="text" id="origin" value="Asemakuja, espoo">
+      </label>
+      <label for="destination">Destination:
+        <input class="form-control" type="text" id="destination" value="Rastalantie, espoo">
+      </label>
+      <label for="waypoints">Waypoints (ids "," separator):
+        <input class="form-control" type="text" id="waypoints" value="1,2">
+        <input type="checkbox" id="waypointsCheck" value="onDemand" onchange="toggleDisabled(this.checked)">Generate route for on-demand services
+      </label>
+      <label for="busId">Bus id:
+        <input class="form-control" type="number" id="busId">
+      </label>
+      <button type="submit" class="btn btn-primary">Set Route</button>
+    </div>
+  </form>
+  <button type="submit" class="btn btn-primary" onclick="toggleFormVisibility()">Toggle form visibility</button>Toggles entity add form visibility
+  <form id="passengerAddForm">
+    <div class="form-group">
+      <h5>Add new passengers</h5>
+      <label for="originPassenger">Origin:
+        <input class="form-control" type="text" id="originPassenger" value="Siltakuja, espoo">
+      </label>
+      <label for="destinationPassenger">Destintation:
+        <input class="form-control" type="text" id="destinationPassenger" value="Rajamäentie, espoo">
+      </label>
+      <button type="submit" class="btn btn-primary">Add Passenger</button>
+    </div>
+  </form>
+  <form id="stopAddForm">
+    <div class="form-group">
+      <h5>Add new stops</h5>
+      <label for="location">Location:
+        <input class="form-control" type="text" id="location" value="Ohrakaski, espoo">
+      </label>
+      <label class="form-check-label">
+        <input type="radio" class="form-check-input" name="stopTypeRadio" id="bus-stop" value="Bus-Stop" checked=""> Add stop as a bus-stop (no charging)
+      </label>
+      <label class="form-check-label">
+        <input type="radio" class="form-check-input" name="stopTypeRadio" id="station" value="Station"> Add stop as a sation (charging)
+      </label>
+      <button type="submit" class="btn btn-primary">Add stop</button>
+    </div>
+  </form>
+  <form id="busAddForm">
+    <div class="form-group">
+      <h5>Add new buses</h5>
+      <label for="originPassenger">Origin:
+        <input class="form-control" type="text" id="originBus" value="Siltakuja, espoo">
+      </label>
+      <button type="submit" class="btn btn-primary">Add bus</button>
+    </div>
+  </form>
+  <div id="stops"></div>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+ #map {
+        max-height: 70%;
+        max-width: 70%;
+        min-width: 360px;
+        min-height: 500px;
+      }
+    
+	
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+.form-group {
+  background-color: #ffefce;
+    max-height: 40%;
+    max-width: 40%;
+}
