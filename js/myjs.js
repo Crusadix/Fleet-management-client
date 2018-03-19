@@ -145,8 +145,6 @@ function fixPathCoords(destination, busData, busMarker) {
 }
 
 function getPathCoords(busMarker, destination, busId, busData) {
-    let coordsToDestination = [];
-    let formattedCoordsAtDestination;
     for (let i = 0; i < paths.length; i++) {
         if (paths[i].id == busId) {
             for (let x = 0; x < busData.currentRoute.length; x++) {

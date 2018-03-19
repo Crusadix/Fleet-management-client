@@ -57,7 +57,12 @@ function getBusInfoSetCurrentDestination(busId) {
         datatype: 'json',
         success: function(respond) {
             console.log(respond);
-            if (typeof respond.currentDestination !== 'undefined') {
+            if (respond.busStatus !== 'powerOff') {
+                if (respond.busStatus === 'idle') {
+                    setTimeout(function() {
+                        getBusInfoSetCurrentDestination(busId);
+                    }, (500));
+                } else if (respond.busStatus === 'driving') {
                 let timeToCurrentDestination = 0;
                 let currentDestination = {
                     lat: respond.currentDestination.lat,
@@ -75,43 +80,13 @@ function getBusInfoSetCurrentDestination(busId) {
                 setTimeout(function() {
                     getBusInfoSetCurrentDestination(busId);
                 }
-                    , (timeToCurrentDestination * 1000 + 500));
+                    , (timeToCurrentDestination * 1000));
                     refreshMap();
-            } else {
-                clearPath(busId);
+                    clearPath(busId);
+                    drawPath(decodePolyline(respond.directionsOverview.
+                        routes[0].overviewPolyline.points), busId);
             }
-        },
-    });
-}
-
-function getBusInfoSetCurrentDestinationOnDemand(busId) {
-    $.ajax({
-        url: (fleetManagerRestBuses + '/' + busId),
-        method: 'GET',
-        datatype: 'json',
-        success: function(respond) {
-            console.log(respond);
-            if (typeof respond.currentDestination !== 'undefined') {
-                let timeToCurrentDestination = 0;
-                let currentDestination = {
-                    lat: respond.currentDestination.lat,
-                    lng: respond.currentDestination.lng,
-                };
-                let date = new Date();
-                let currentTimeMillis = date.getTime();
-                timeToCurrentDestination = respond.timeToCurrentDestination -
-                    ((currentTimeMillis - respond.destinationUpdateTimeStamp)
-                     / 1000);
-                // the latter part is for removing ajax call processing time
-                refreshBusInfoWindow(busId, respond);
-                animateMarkerMovement(currentDestination,
-                    timeToCurrentDestination, busId, respond);
-                setTimeout(function() {
-                    getBusInfoSetCurrentDestinationOnDemand(busId);
-                }
-                    , (timeToCurrentDestination * 1000 + 500));
-                    refreshMap();
-            } else {
+        } else {
                 clearPath(busId);
             }
         },
@@ -209,7 +184,7 @@ function setToDriveOnDemand(busId) {
             operationType: 'onDemand',
         },
         success: function(respond) {
-            getBusInfoSetCurrentDestinationOnDemand(busId);
+            getBusInfoSetCurrentDestination(busId);
         },
     });
 }
