@@ -50,6 +50,16 @@ function getPassengers() {
     });
 }
 
+function updateDirectionsOnDemand(busId) {
+    $.ajax({
+        url: (fleetManagerRestBuses + '/status/' + busId),
+        method: 'POST',
+        datatype: 'json',
+        success: function(respond) {
+        },
+    });
+}
+
 function getBusInfoSetCurrentDestination(busId) {
     $.ajax({
         url: (fleetManagerRestBuses + '/' + busId),
@@ -62,6 +72,8 @@ function getBusInfoSetCurrentDestination(busId) {
                     setTimeout(function() {
                         getBusInfoSetCurrentDestination(busId);
                     }, (500));
+                } else if (respond.busStatus === 'stopped') {
+                    refreshBusInfoWindow(busId, respond);
                 } else if (respond.busStatus === 'driving') {
                 let timeToCurrentDestination = 0;
                 let currentDestination = {
@@ -132,17 +144,12 @@ function getDirectionsOnDemand(origin, destination, busId) {
     });
 }
 
-function updateDirectionsOnDemand(busId) {
+function setBusToStopped(busId) {
     $.ajax({
-        url: (fleetManagerRestBuses + '/' + busId),
-        method: 'GET',
+        url: (fleetManagerRestBuses + '/status/' + busId),
+        method: 'POST',
         datatype: 'json',
         success: function(respond) {
-            clearPath(busId);
-            drawPath(decodePolyline(respond.directionsOverview.routes[0].
-                overviewPolyline.points), busId);
-            setMarkerBus(respond.directionsOverview.routes[0].legs[0].
-                startLocation, busId);
         },
     });
 }

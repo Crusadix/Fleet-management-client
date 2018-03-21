@@ -182,11 +182,22 @@ function animateMarkerMovement(destination, durationSeconds, busId, busData) {
     }
     let coordsToDestination = getPathCoords(busMarker,
          destination, busId, busData);
-    let numberOfCoords = coordsToDestination.length;
-    let durationToDestination = durationSeconds * 1000;
-    let timePerJump = durationToDestination / numberOfCoords;
-    let index = 0;
-    moveMarker(busMarker, timePerJump, coordsToDestination, index);
+    if (coordsToDestination !== null && typeof
+        coordsToDestination === 'object' && 'length' in coordsToDestination) {
+        let numberOfCoords = coordsToDestination.length;
+        let durationToDestination = durationSeconds * 1000;
+        let timePerJump = durationToDestination / numberOfCoords;
+        let index = 0;
+        moveMarker(busMarker, timePerJump, coordsToDestination, index);
+    } else {
+        busMarker.stepIndex = 0;
+        console.log('busmarker index reset');
+        animateMarkerMovement(destination, durationSeconds, busId, busData);
+    }
+}
+
+function stopBus(busId) {
+    setBusToStopped(busId);
 }
 
 function clearPassengerMarkers() {
@@ -211,6 +222,8 @@ function refreshMap(busId, responseData) {
 function refreshBusInfoWindow(busId, responseData) {
     let contentString = '<div id='+ '"infoWindow' +busId +'"'+
     '> <p>Bus id: ' + busId + '</p>' +
+    '<button onclick="stopBus(' + busId +
+    ')">Stop</button>' +
     '<p>Bus status: ' + responseData.busStatus + '</p>' +
     '<p>Latest coords ' + responseData.locationCoords.lat +
     ',' + responseData.locationCoords.lng + '</p>' +
@@ -324,4 +337,8 @@ $('#driveBusRouteButton').click(function() {
 
 $('#driveOnDemandButton').click(function() {
     setToDriveOnDemand();
+});
+
+$('#stopButton').click(function() {
+    stopBus();
 });
